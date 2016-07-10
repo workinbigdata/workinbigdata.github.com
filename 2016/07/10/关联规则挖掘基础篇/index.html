@@ -1,0 +1,621 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="数据挖掘,关联规则," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="什么是关联规则挖掘？　　作为数据挖掘的重要研究方向之一，关联规则挖掘的目的是从事务数据集中分析数据项之间潜在的关联关系，揭示其中蕴含的对于用户有价值的模式。一般认为，关联规则挖掘主要由两个步骤组成：(1)从事务数据集中挖掘所有支持度不小于最小支持度阈值的频繁项集；(2)从上一步结果中生成满足最小置信度阈值要求的关联规则。其中，由于具有指数级别的时间复杂度，频繁项集挖掘所消耗的时间往往超过用户可以">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关联规则挖掘基础篇">
+<meta property="og:url" content="http://yoursite.com/2016/07/10/关联规则挖掘基础篇/index.html">
+<meta property="og:site_name" content="work in big data">
+<meta property="og:description" content="什么是关联规则挖掘？　　作为数据挖掘的重要研究方向之一，关联规则挖掘的目的是从事务数据集中分析数据项之间潜在的关联关系，揭示其中蕴含的对于用户有价值的模式。一般认为，关联规则挖掘主要由两个步骤组成：(1)从事务数据集中挖掘所有支持度不小于最小支持度阈值的频繁项集；(2)从上一步结果中生成满足最小置信度阈值要求的关联规则。其中，由于具有指数级别的时间复杂度，频繁项集挖掘所消耗的时间往往超过用户可以">
+<meta property="og:image" content="http://yoursite.com/img/market.jpg">
+<meta property="og:image" content="http://yoursite.com/img/lattice.png">
+<meta property="og:image" content="http://yoursite.com/img/brute_force.png">
+<meta property="og:image" content="http://yoursite.com/img/apriori_prune.png">
+<meta property="og:image" content="http://yoursite.com/img/self_join.png">
+<meta property="og:image" content="http://yoursite.com/img/apriori.jpg">
+<meta property="og:image" content="http://yoursite.com/img/Hash Tree.png">
+<meta property="og:image" content="http://yoursite.com/img/subset_hash_tree.png">
+<meta property="og:image" content="http://yoursite.com/img/dhp_example.png">
+<meta property="og:image" content="http://yoursite.com/img/yafim_1.png">
+<meta property="og:image" content="http://yoursite.com/img/yafim.png">
+<meta property="og:image" content="http://yoursite.com/img/db.jpg">
+<meta property="og:image" content="http://yoursite.com/img/fptree.png">
+<meta property="og:image" content="http://yoursite.com/img/headertable.jpg">
+<meta property="og:image" content="http://yoursite.com/img/fpgrowthmine.jpg">
+<meta property="og:updated_time" content="2016-07-10T12:10:04.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="关联规则挖掘基础篇">
+<meta name="twitter:description" content="什么是关联规则挖掘？　　作为数据挖掘的重要研究方向之一，关联规则挖掘的目的是从事务数据集中分析数据项之间潜在的关联关系，揭示其中蕴含的对于用户有价值的模式。一般认为，关联规则挖掘主要由两个步骤组成：(1)从事务数据集中挖掘所有支持度不小于最小支持度阈值的频繁项集；(2)从上一步结果中生成满足最小置信度阈值要求的关联规则。其中，由于具有指数级别的时间复杂度，频繁项集挖掘所消耗的时间往往超过用户可以">
+<meta name="twitter:image" content="http://yoursite.com/img/market.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/07/10/关联规则挖掘基础篇/"/>
+
+  <title> 关联规则挖掘基础篇 | work in big data </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">work in big data</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                关联规则挖掘基础篇
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-07-10T20:10:15+08:00" content="2016-07-10">
+              2016-07-10
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/数据挖掘/" itemprop="url" rel="index">
+                    <span itemprop="name">数据挖掘</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><center><img src="/img/market.jpg" alt="img"></center></p>
+<h3 id="什么是关联规则挖掘？"><a href="#什么是关联规则挖掘？" class="headerlink" title="什么是关联规则挖掘？"></a>什么是关联规则挖掘？</h3><p>　　作为数据挖掘的重要研究方向之一，关联规则挖掘的目的是从事务数据集中分析数据项之间潜在的关联关系，揭示其中蕴含的对于用户有价值的模式。一般认为，关联规则挖掘主要由两个步骤组成：(1)从事务数据集中挖掘所有支持度不小于最小支持度阈值的频繁项集；(2)从上一步结果中生成满足最小置信度阈值要求的关联规则。其中，由于具有指数级别的时间复杂度，频繁项集挖掘所消耗的时间往往超过用户可以接受的程度。在过去的十多年中，国内外的研究者们提出了许多算法来不断改进相关算法的性能。这里的性能主要指的是执行时间。<br><a id="more"></a></p>
+<h3 id="问题定义"><a href="#问题定义" class="headerlink" title="问题定义"></a>问题定义</h3><p>　　<b>定义1</b>（项集）设I={i<sub>1</sub>，i<sub>2</sub>，…，i<sub>n</sub>}是n个不同的数据项组成的集合。包含0个或多个数据项的集合，称之为项集。<br>　　<b>定义2</b>（k-项集）如果一个项集包含 k个数据项，则称之为k-项集。<br>　　<b>定义3</b>（事务）事务是不同的数据项组成的集合。每一条事务T是I的一个子集，即T⊆ I。<br>　　<b>定义4</b>（事务数据集）事务数据集D={T<sub>1</sub>，T<sub>2</sub>，…，T<sub>m</sub>}是m条事务组成的集合。<br>　　<b>定义5</b>（项集的支持度计数）项集X在D中的支持度计数表示D中包含X的事务数，其形式化定义如下:</p>
+<p><center>count(X)=|{T<sub>i</sub>|X⊆T<sub>i</sub>，T<sub>i</sub>∈D}|</center><br>　　其中，|·|表示集合中元素的个数。<br>　　<b>定义6</b>（项集的支持度）项集X在D中的支持度表示包含X的事务在D中所占的比例，其形式化定义如下:</p>
+<p><center>support(X)=|{T<sub>i</sub>|X⊆T<sub>i</sub>，T<sub>i</sub>∈D}|/|D|</center><br>　　<b>定义7</b>（频繁项集）如果项集X的支持度不小于用户给定的最小支持度阈值 minSup，则称X为频繁项集。<br>　　<b>定义8</b>（候选项集）可能成为频繁项集的项集称为候选项集。</p>
+<h3 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h3><p>　　如果一个事务数据集中包含5个数据项，则该频繁项集挖掘问题的解空间可以表示如下。</p>
+<p><div align="center"><br><img src="/img/lattice.png" width="600"><br></div><br>　　为了计算该解空间中每一个候选项集的支持度，Brute-force方法通过扫描事务数据集，将所有候选项集与事务逐一比较。如果事务中包含该候选项集，则增加候选项集的支持度。该过程如下图所示。</p>
+<p><div align="center"><br><img src="/img/brute_force.png" width="600"><br></div><br>　　从而，可知Brute-force方法的时间复杂度约为O(NMw)，其中N是事务数据集的大小，M是候选项集的数量，w是平均事务的长度。由于M=2<sup>k</sup>，k是数据项的数量，因此，该方法的时间复杂度是指数级别。</p>
+<h3 id="Apriori算法分析"><a href="#Apriori算法分析" class="headerlink" title="Apriori算法分析"></a>Apriori算法分析</h3><h4 id="基本思想"><a href="#基本思想" class="headerlink" title="基本思想"></a>基本思想</h4><p>　　Apriori算法采用了逐层搜索的策略来对解空间进行遍历。在遍历的过程中 ，该算法采用了先验原理（<em>如果一个项集是频繁项集，则其任意子集均是频繁项集。</em>）来对解空间进行剪枝，减少候选项集的数量。</p>
+<p><div align="center"><br><img src="/img/apriori_prune.png" width="600"><br></div><br>　　给定如上图所示的解空间，如果候选项集{A，B}不是频繁项集，则该候选项集的任意超集均不可能成为频繁项集，因此，无需计算这些项集的支持度，可以将其从解空间中剪枝，减少了不必要的计算量。</p>
+<h4 id="算法过程"><a href="#算法过程" class="headerlink" title="算法过程"></a>算法过程</h4><p>　　Apriori算法首先扫描一次事务数据集，计算各个数据项的支持度，从而得到频繁1-项集。根据这些频繁1-项集生成候选2-项集。通过再一次扫描事务数据集，计算各个候选项集的支持度，从而得到频繁2-项集。Apriori算法按照这个方式不断迭代，直至不再产生新的候选项集或频繁项集为止。其中，候选(k+1)-项集是通过将两个除了最后一个数据项不同的k-项集做自连接（self-join）来生成，不满足先验原理的候选(k+1)-项集将被删除。</p>
+<p><div align="center"><br><img src="/img/self_join.png" width="400"><br></div><br>　　如上图所示，将频繁3-项集{abc}和{abd}做自连接生成候选4-项集{a，b，c，d}，由于{a，b，c，d}的任意子集均是频繁项集，因此，保留该候选项集。而候选4-项集{a，c，d，e}的子集{c，d，e}并不是频繁项集，因此，将其删除。<br>　　Apriori算法的伪代码如下。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">initially, scan DB once to get frequent 1-itemset</span><br><span class="line">repeat</span><br><span class="line">　　  generate (k+1)-candidate itemsets from frequent k-itemset</span><br><span class="line">　　  test (k+1)-candidate itemsets against DB to find frequent (k+1)-itemsets</span><br><span class="line">　　  set k := k + 1</span><br><span class="line">until no candidate or frequent itemsets can be generated</span><br><span class="line">return all the frequent itemsets derived</span><br></pre></td></tr></table></figure></p>
+<p>　　给定事务数据集TDB，Apriori算法的执行过程如下图所示。</p>
+<p><div align="center"><br><img src="/img/apriori.jpg" width="600"><br></div><br>　　可见，Apriori算法的执行过程需要多次扫描事务数据集，尽管采用了基于先验定理的剪枝技术，仍然需要在内存中保存大量候选项集，另外，候选项集的支持度计数占用了大量计算时间。</p>
+<h3 id="Apriori算法优化策略"><a href="#Apriori算法优化策略" class="headerlink" title="Apriori算法优化策略"></a>Apriori算法优化策略</h3><h4 id="Hash-Tree"><a href="#Hash-Tree" class="headerlink" title="Hash Tree"></a>Hash Tree</h4><p>　　支持度计数的一种方法是将每个事务与所有的候选项集进行比较，并且更新包含在事务中的候选项集的支持度技术。这种方法是计算昂贵的，尤其当事务和候选项集的数量都很大时。<br>　　另外一种方法是枚举每个事务所包含的项集，并且利用这些项集来更新对应的候选项集的支持度。该方法通过建立Hash Tree来表示候选项集。建立Hash Tree的伪代码如下。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">initially, k = 1</span><br><span class="line">m is the maximum number of candidate itemsets of a tree node which is specified by user</span><br><span class="line">for each candidate c in all candidate itemsets </span><br><span class="line">    compute the hash value v of kth item of c</span><br><span class="line">    insert c to tree node n according to v</span><br><span class="line">    if the number of candidate itemsets of n exceeds m</span><br><span class="line">        k := k + 1</span><br><span class="line">        split n by k</span><br><span class="line">return Hash Tree</span><br></pre></td></tr></table></figure></p>
+<p>　　给定Hash函数function(x)=x%3，Hash Tree的叶子节点包含了所有候选项集，建立完成的Hash Tree如下图所示。</p>
+<p><div align="center"><br><img src="/img/Hash Tree.png" width="600"><br></div><br>　　对于事务{1，2，3，4，5}，分别在Hash Tree的第k层求解该事务第k个数据项的Hash值，并通过遍历叶子节点中包含的候选项集来完成支持度计数。采用Hash Tree的支持度计数只需要遍历Hash Tree的部分叶子节点，减少了计算量。</p>
+<p><div align="center"><br><img src="/img/subset_hash_tree.png" width="600"><br></div></p>
+<h4 id="Direct-Hashing-and-Pruning-DHP"><a href="#Direct-Hashing-and-Pruning-DHP" class="headerlink" title="Direct Hashing and Pruning(DHP)"></a>Direct Hashing and Pruning(DHP)</h4><p>　　由于Apriori算法在执行过程中需要生成大量的候选项集，限制了该算法的性能表现。采用DHP技术可以帮助减少候选项集的数量，尤其是前两轮迭代时，实验结果表明采用DHP技术后候选项集的数量减少了一个数量级。另外，每一轮迭代时，DHP技术会对事务数据集进行裁剪，有助于减少后续计算的时间开销。<br>　　采用DHP技术生成候选2-项集的过程如下图所示。</p>
+<p><div align="center"><br><img src="/img/dhp_example.png" width="600"><br></div><br>　　DHP技术在计算候选1-项集的支持度计数的同时，对每一条事务所包含的2-项集进行枚举，根据Hash函数将其映射到bucket。每一个bucket记录了其所包含的项集的数量。在频繁1-项集通过自连接生成候选2-项集时，通过查询对应的bucket来过滤不满足最小支持度阈值的候选2-项集。<br>　　对于频繁(k+1)-项集而言，其必然包含(k+1)个频繁k-项集，同时，每一个数据项必然出现了k次。如频繁3-项集{B，C，D}包含3个频繁2-项集{B，C}，{B，D}，{C，D}，其中，{B}，{C}，{D}各分别出现2次。DHP技术根据这一规律，对事务数据集进行裁剪。具体地，在遍历事务数据集来计算候选k-项集的支持度计数时，对于每一条事务，统计每一个数据项在候选项集中出现的次数，并将那些出现次数小于k次的数据项删除。如果删除之后，整条事务的长度小于(k+1)，则将这条事务从事务数据集中删除。</p>
+<h3 id="Apriori算法并行化"><a href="#Apriori算法并行化" class="headerlink" title="Apriori算法并行化"></a>Apriori算法并行化</h3><p>　　由于Apriori算法需要多次迭代计算，相比较而言，Spark比MapReduce更适合于实现该算法。Apriori算法并行化的基本思想是将生成候选项集的过程和计算候选项集计数的过程交给各个工作节点独立执行。<br>　　首先，Apriori算法计算事务数据集中频繁1-项集的支持度计数。</p>
+<p><div align="center"><br><img src="/img/yafim_1.png" width="300"><br></div><br>　　在接下来的每一轮迭代过程中，各个分区生成的候选项集将被collect到driver端，并建立Hash Tree，并通过broadcast的方式将Hash Tree发送到各个worker。每一个executor根据Hash Tree计算分区内候选项集的支持度计数。在具体实现生成候选项集时，Spark自带的join方法难以保证性能和稳定性。推荐采用MapReduce中map side join的方式实现，即将候选项集broadcast到各个worker。每一个executor将当前分区内的候选项集与broadcast变量中的候选项集进行自连接。</p>
+<p><div align="center"><br><img src="/img/yafim.png" width="300"><br></div></p>
+<h3 id="FP-Growth算法分析"><a href="#FP-Growth算法分析" class="headerlink" title="FP-Growth算法分析"></a>FP-Growth算法分析</h3><h4 id="基本思想-1"><a href="#基本思想-1" class="headerlink" title="基本思想"></a>基本思想</h4><p>　　FP-Growth算法采用分而治之的思想，递归地将事务数据集划分为多个更小的条件事务数据集来挖掘频繁项集。同时，通过建立FP-Tree来表示事务数据集。FP-Tree是一种前缀树的变形，具有较高的压缩性能。FP-Growth算法在执行过程中只需要两次遍历事务数据集，并且不产生候选项集，从而在性能上比Apriori算法快了一个数量级。</p>
+<h4 id="算法过程-1"><a href="#算法过程-1" class="headerlink" title="算法过程"></a>算法过程</h4><p>　　给定如下图所示的事务数据集。首先，FP-Growth算法首先扫描一次事务数据集，计算各个数据项的支持度，从而得到频繁1-项集。然后，再一次扫描事务数据集，根据频繁1-项集对每一条事务进行过滤，删除其中的非频繁1-项集，并按照支持度计数递减排序。</p>
+<p><div align="center"><br><img src="/img/db.jpg" width="300"><br></div><br>　　FP-Tree的每一个节点存储了数据项的名称，支持度计数和指向同名节点的指针。事务插入到FP-Tree的过程如下图所示。</p>
+<p><div align="center"><br><img src="/img/fptree.png" width="400"><br></div><br>　　建立完成之后的FP-Tree如下图所示。</p>
+<p><div align="center"><br><img src="/img/headertable.jpg" width="400"><br></div><br>　　概括地说,FP-Growth算法挖掘频繁项集的过程由两个子过程组成。其一是遍历事务数据集并建立FP-Tree。其二是对于该FP-Tree对应的头表中的每一个数据项,通过遍历同名节点链表来生成数据项的条件事务数据集。该算法通过递归地执行上述两个子过程来挖掘频繁项集，如下图所示。</p>
+<p><div align="center"><br><img src="/img/fpgrowthmine.jpg" width="800"><br></div></p>
+<h3 id="FP-Growth算法优化策略"><a href="#FP-Growth算法优化策略" class="headerlink" title="FP-Growth算法优化策略"></a>FP-Growth算法优化策略</h3><h3 id="FP-Growth算法并行化"><a href="#FP-Growth算法并行化" class="headerlink" title="FP-Growth算法并行化"></a>FP-Growth算法并行化</h3>
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/数据挖掘/" rel="tag">#数据挖掘</a>
+          
+            <a href="/tags/关联规则/" rel="tag">#关联规则</a>
+          
+        </div>
+      
+
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Mark Lin" />
+          <p class="site-author-name" itemprop="name">Mark Lin</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">1</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是关联规则挖掘？"><span class="nav-number">1.</span> <span class="nav-text">什么是关联规则挖掘？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题定义"><span class="nav-number">2.</span> <span class="nav-text">问题定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题分析"><span class="nav-number">3.</span> <span class="nav-text">问题分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Apriori算法分析"><span class="nav-number">4.</span> <span class="nav-text">Apriori算法分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#基本思想"><span class="nav-number">4.1.</span> <span class="nav-text">基本思想</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#算法过程"><span class="nav-number">4.2.</span> <span class="nav-text">算法过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Apriori算法优化策略"><span class="nav-number">5.</span> <span class="nav-text">Apriori算法优化策略</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Hash-Tree"><span class="nav-number">5.1.</span> <span class="nav-text">Hash Tree</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Direct-Hashing-and-Pruning-DHP"><span class="nav-number">5.2.</span> <span class="nav-text">Direct Hashing and Pruning(DHP)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Apriori算法并行化"><span class="nav-number">6.</span> <span class="nav-text">Apriori算法并行化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FP-Growth算法分析"><span class="nav-number">7.</span> <span class="nav-text">FP-Growth算法分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#基本思想-1"><span class="nav-number">7.1.</span> <span class="nav-text">基本思想</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#算法过程-1"><span class="nav-number">7.2.</span> <span class="nav-text">算法过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FP-Growth算法优化策略"><span class="nav-number">8.</span> <span class="nav-text">FP-Growth算法优化策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FP-Growth算法并行化"><span class="nav-number">9.</span> <span class="nav-text">FP-Growth算法并行化</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mark Lin</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>
