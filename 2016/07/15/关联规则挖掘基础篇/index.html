@@ -87,7 +87,7 @@
 <meta name="description" content="什么是关联规则挖掘？　　作为数据挖掘的重要研究方向之一，关联规则挖掘的目的是从事务数据集中分析数据项之间潜在的关联关系，揭示其中蕴含的对于用户有价值的模式。一般认为，关联规则挖掘主要由两个步骤组成：(1)从事务数据集中挖掘所有支持度不小于最小支持度阈值的频繁项集；(2)从上一步结果中生成满足最小置信度阈值要求的关联规则。其中，由于具有指数级别的时间复杂度，频繁项集挖掘所消耗的时间往往超过用户可以">
 <meta property="og:type" content="article">
 <meta property="og:title" content="关联规则挖掘基础篇">
-<meta property="og:url" content="http://yoursite.com/2016/07/14/关联规则挖掘基础篇/index.html">
+<meta property="og:url" content="http://yoursite.com/2016/07/15/关联规则挖掘基础篇/index.html">
 <meta property="og:site_name" content="work in big data">
 <meta property="og:description" content="什么是关联规则挖掘？　　作为数据挖掘的重要研究方向之一，关联规则挖掘的目的是从事务数据集中分析数据项之间潜在的关联关系，揭示其中蕴含的对于用户有价值的模式。一般认为，关联规则挖掘主要由两个步骤组成：(1)从事务数据集中挖掘所有支持度不小于最小支持度阈值的频繁项集；(2)从上一步结果中生成满足最小置信度阈值要求的关联规则。其中，由于具有指数级别的时间复杂度，频繁项集挖掘所消耗的时间往往超过用户可以">
 <meta property="og:image" content="http://yoursite.com/img/关联规则挖掘基础篇/market.jpg">
@@ -109,7 +109,7 @@
 <meta property="og:image" content="http://yoursite.com/img/关联规则挖掘基础篇/fparray.png">
 <meta property="og:image" content="http://yoursite.com/img/关联规则挖掘基础篇/pfp1.png">
 <meta property="og:image" content="http://yoursite.com/img/关联规则挖掘基础篇/pfp.png">
-<meta property="og:updated_time" content="2016-07-14T15:58:53.000Z">
+<meta property="og:updated_time" content="2016-07-14T16:03:06.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="关联规则挖掘基础篇">
 <meta name="twitter:description" content="什么是关联规则挖掘？　　作为数据挖掘的重要研究方向之一，关联规则挖掘的目的是从事务数据集中分析数据项之间潜在的关联关系，揭示其中蕴含的对于用户有价值的模式。一般认为，关联规则挖掘主要由两个步骤组成：(1)从事务数据集中挖掘所有支持度不小于最小支持度阈值的频繁项集；(2)从上一步结果中生成满足最小置信度阈值要求的关联规则。其中，由于具有指数级别的时间复杂度，频繁项集挖掘所消耗的时间往往超过用户可以">
@@ -134,7 +134,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2016/07/14/关联规则挖掘基础篇/"/>
+  <link rel="canonical" href="http://yoursite.com/2016/07/15/关联规则挖掘基础篇/"/>
 
   <title> 关联规则挖掘基础篇 | work in big data </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
@@ -278,8 +278,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-07-14T23:59:01+08:00" content="2016-07-14">
-              2016-07-14
+            <time itemprop="dateCreated" datetime="2016-07-15T00:03:21+08:00" content="2016-07-15">
+              2016-07-15
             </time>
           </span>
 
@@ -361,7 +361,7 @@
 <p><div align="center"><br><img src="/img/关联规则挖掘基础篇/pfp1.png" width="400"><br></div><br>　　该算法共执行三次Map和Reduce方法来查找事务数据集中的频繁项集。第一次执行Map和Reduce方法的目的是统计每一个数据项在事务数据集中出现的次数。删除不满足阈值的数据项后，按照支持度计数递减排序。然后,将上述计算结果分组，并为每一个组分配一个唯一的id。分组数量和分组策略的合理性都对该算法的性能有着直接影响。其中,分组数量由用户指定。为了均衡各个工作节点的工作负载，该算法采用了基于哈希的分组策略，并将分组结果通过分布式缓存技术(Distributed Cache)传输到各个工作节点。第二次执行Map和Reduce方法的目的是生成条件事务数据集和查找条件事务数据集中包含的频繁项集。其中，Map方法的输入是事务数据集的一个分区。对于分区中的每一条事务，该算法将根据分组结果来生成其对应的条件事务，将其写入到磁盘上，并作为Reduce方法的输入，如下图所示。Reduce方法从集群的其他工作节点的磁盘上拉取当前组对应的所有条件事务，将其作为新的事务数据集，通过执行单机FP-Growth算法来挖掘其中包含的所有频繁项集。第三次执行Map和Reduce方法最终汇总所有工作节点的计算结果。</p>
 <p><div align="center"><br><img src="/img/关联规则挖掘基础篇/pfp.png" width="auto"><br></div><br>　　在Spark MLlib中也有FP-Growth算法的实现。该算法总体思路上与PFP算法相同，不同之处在于对shuffle进行了优化。PFP算法中shuffle的条件事务数据集可以理解为数组。但是，Spark MLlib在shuffle之前基于条件事务数据集建立了FP-Tree，因此，shuffle的是FP-Tree。由于FP-Tree具有较好的压缩性能，尽管建立FP-Tree时牺牲了一点时间，但是，当需要shuffle的数据量较大时，Spark MLlib中实现的FP-Growth算法确实具有较好的效果。然而，该实现仍然存在比较明显的缺点，有兴趣的读者可以通过阅读源码来思考一下这个问题。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">  * Computes an FP-Growth model that contains frequent itemsets.</span><br><span class="line">  * @param data input data set, each element contains a transaction</span><br><span class="line">  * @return an [[FPGrowthModel]]</span><br><span class="line">  *</span><br><span class="line">  */</span><br><span class="line">@Since(&quot;1.3.0&quot;)</span><br><span class="line">def run[Item: ClassTag](data: RDD[Array[Item]]): FPGrowthModel[Item] = &#123;</span><br><span class="line">    if (data.getStorageLevel == StorageLevel.NONE) &#123;</span><br><span class="line">        logWarning(&quot;Input data is not cached.&quot;)</span><br><span class="line">    &#125;</span><br><span class="line">    val count = data.count()</span><br><span class="line">    // 最小支持度阈值minCount</span><br><span class="line">    val minCount = math.ceil(minSupport * count).toLong </span><br><span class="line">    val numParts = if (numPartitions &gt; 0) numPartitions else data.partitions.length</span><br><span class="line">    // 采用HashPartitioner来对数据项进行分组</span><br><span class="line">    val partitioner = new HashPartitioner(numParts)</span><br><span class="line">    // 计算频繁1-项集</span><br><span class="line">    val freqItems = genFreqItems(data, minCount, partitioner)</span><br><span class="line">    // 挖掘所有频繁项集</span><br><span class="line">    val freqItemsets = genFreqItemsets(data, minCount, freqItems, partitioner)</span><br><span class="line">    new FPGrowthModel(freqItemsets)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">  * Generate frequent itemsets by building FP-Trees, the extraction is done on each partition.</span><br><span class="line">  * @param data transactions</span><br><span class="line">  * @param minCount minimum count for frequent itemsets</span><br><span class="line">  * @param freqItems frequent items</span><br><span class="line">  * @param partitioner partitioner used to distribute transactions</span><br><span class="line">  * @return an RDD of (frequent itemset, count)</span><br><span class="line">  */</span><br><span class="line">private def genFreqItemsets[Item: ClassTag](</span><br><span class="line">        data: RDD[Array[Item]],</span><br><span class="line">        minCount: Long,</span><br><span class="line">        freqItems: Array[Item],</span><br><span class="line">        partitioner: Partitioner): RDD[FreqItemset[Item]] = &#123;</span><br><span class="line">        val itemToRank = freqItems.zipWithIndex.toMap</span><br><span class="line">    data.flatMap &#123; transaction =&gt;</span><br><span class="line">        genCondTransactions(transaction, itemToRank, partitioner) // 生成候选项集</span><br><span class="line">    &#125;.aggregateByKey(new FPTree[Int], partitioner.numPartitions)(</span><br><span class="line">        (tree, transaction) =&gt; tree.add(transaction, 1L), // 在Map端建立FP-Tree</span><br><span class="line">        (tree1, tree2) =&gt; tree1.merge(tree2)) // 在Reduce端合并FP-Tree</span><br><span class="line">    .flatMap &#123; case (part, tree) =&gt;</span><br><span class="line">        tree.extract(minCount, x =&gt; partitioner.getPartition(x) == part) // 递归挖掘所有频繁项集</span><br><span class="line">    &#125;.map &#123; case (ranks, count) =&gt;</span><br><span class="line">        new FreqItemset(ranks.map(i =&gt; freqItems(i)).toArray, count)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-<h3 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h3><p>　　本文从时间复杂度角度引入对频繁项集挖掘问题的分析，并概要地介绍了两种常见的频繁项集挖掘算法Apriori算法和FP-Growth算法，并对它们的优化策略和并行化方法进行了介绍。</p>
+<h3 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h3><p>　　本文从时间复杂度角度引入对频繁项集挖掘问题的分析，概要地介绍了两种常见的频繁项集挖掘算法Apriori算法和FP-Growth算法，并对它们的优化策略和并行化方法进行了介绍。</p>
 
       
     </div>
