@@ -87,7 +87,7 @@
 <meta name="description" content="什么是关联规则挖掘？　　作为数据挖掘的重要研究方向之一，关联规则挖掘的目的是从事务数据集中分析数据项之间潜在的关联关系，揭示其中蕴含的对于用户有价值的模式。一般认为，关联规则挖掘主要由两个步骤组成：(1)从事务数据集中挖掘所有支持度不小于最小支持度阈值的频繁项集；(2)从上一步结果中生成满足最小置信度阈值要求的关联规则。其中，由于具有指数级别的时间复杂度，频繁项集挖掘所消耗的时间往往超过用户可以">
 <meta property="og:type" content="article">
 <meta property="og:title" content="关联规则挖掘基础篇">
-<meta property="og:url" content="http://yoursite.com/2016/07/15/关联规则挖掘基础篇/index.html">
+<meta property="og:url" content="http://yoursite.com/2016/07/20/关联规则挖掘基础篇/index.html">
 <meta property="og:site_name" content="work in big data">
 <meta property="og:description" content="什么是关联规则挖掘？　　作为数据挖掘的重要研究方向之一，关联规则挖掘的目的是从事务数据集中分析数据项之间潜在的关联关系，揭示其中蕴含的对于用户有价值的模式。一般认为，关联规则挖掘主要由两个步骤组成：(1)从事务数据集中挖掘所有支持度不小于最小支持度阈值的频繁项集；(2)从上一步结果中生成满足最小置信度阈值要求的关联规则。其中，由于具有指数级别的时间复杂度，频繁项集挖掘所消耗的时间往往超过用户可以">
 <meta property="og:image" content="http://yoursite.com/img/关联规则挖掘基础篇/market.jpg">
@@ -109,7 +109,7 @@
 <meta property="og:image" content="http://yoursite.com/img/关联规则挖掘基础篇/fparray.png">
 <meta property="og:image" content="http://yoursite.com/img/关联规则挖掘基础篇/pfp1.png">
 <meta property="og:image" content="http://yoursite.com/img/关联规则挖掘基础篇/pfp.png">
-<meta property="og:updated_time" content="2016-07-14T16:03:06.000Z">
+<meta property="og:updated_time" content="2016-07-20T07:09:24.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="关联规则挖掘基础篇">
 <meta name="twitter:description" content="什么是关联规则挖掘？　　作为数据挖掘的重要研究方向之一，关联规则挖掘的目的是从事务数据集中分析数据项之间潜在的关联关系，揭示其中蕴含的对于用户有价值的模式。一般认为，关联规则挖掘主要由两个步骤组成：(1)从事务数据集中挖掘所有支持度不小于最小支持度阈值的频繁项集；(2)从上一步结果中生成满足最小置信度阈值要求的关联规则。其中，由于具有指数级别的时间复杂度，频繁项集挖掘所消耗的时间往往超过用户可以">
@@ -134,7 +134,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2016/07/15/关联规则挖掘基础篇/"/>
+  <link rel="canonical" href="http://yoursite.com/2016/07/20/关联规则挖掘基础篇/"/>
 
   <title> 关联规则挖掘基础篇 | work in big data </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
@@ -278,8 +278,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-07-15T00:25:25+08:00" content="2016-07-15">
-              2016-07-15
+            <time itemprop="dateCreated" datetime="2016-07-20T15:09:46+08:00" content="2016-07-20">
+              2016-07-20
             </time>
           </span>
 
@@ -344,9 +344,9 @@
 <p><div align="center"><br><img src="/img/关联规则挖掘基础篇/Hash Tree.png" width="600"><br></div><br>　　考虑一条事务t={1，2，3，4，5}，为了更新候选项集的支持度计数，所有包含属于事务t的候选3-项集的叶节点至少访问一次。注意，包含在t中的候选3-项集必然是以数据项{1}，{2}，{3}开始。因此，Hash Tree的根节点将数据项{1}，{2}，{3}分别散列到不同的子节点。在树的下一层，根据事务的第二个数据项进行散列。继续这一过程，直至到达Hash Tree的叶节点。将事务与叶节点中存储的候选项集进行比较，如果候选项集是该事务的子集，则增加它的支持度计数。</p>
 <p><div align="center"><br><img src="/img/关联规则挖掘基础篇/subset_hash_tree.png" width="600"><br></div></p>
 <h4 id="Direct-Hashing-and-Pruning-DHP"><a href="#Direct-Hashing-and-Pruning-DHP" class="headerlink" title="Direct Hashing and Pruning(DHP)"></a>Direct Hashing and Pruning(DHP)</h4><p>　　Apriori算法在执行过程中需要生成大量候选项集，同时，为了计算这些候选项集的支持度计数需要大量的时间开销。采用DHP技术可以帮助减少候选项集的数量，尤其是在前两轮迭代计算过程中，实验结果表明采用DHP技术后候选项集的数量减少了一个数量级。另外，DHP技术会对事务数据集进行裁剪，有助于减少后续计算的时间开销。<br>　　下图是采用DHP技术生成候选2-项集的过程。</p>
-<p><div align="center"><br><img src="/img/关联规则挖掘基础篇/dhp_example.png" width="600"><br></div><br>　　DHP技术在计算候选1-项集的支持度计数的同时，对每一条事务所包含的2-项集进行枚举，根据Hash函数将其映射到对应的bucket。每一个bucket记录了其所包含的项集的数量。在生成候选2-项集时，通过查询对应的bucket来过滤不满足最小支持度阈值的候选2-项集。例如，通过Hash函数计算频繁1-项集{A}和{B}自连接生成的候选2-项集{A，B}对应的Bucket，可以发现其不满足最小支持度阈值，因此，无需计算该候选2-项集的支持度计数。<br>　　对于频繁(k+1)-项集而言，其必然包含(k+1)个频繁k-项集，同时，每一个数据项必然出现了k次。如频繁3-项集{B，C，D}包含3个频繁2-项集{B，C}，{B，D}，{C，D}，其中，{B}，{C}，{D}各分别出现2次。根据这一规律，DHP计数对事务数据集进行裁剪。具体地，在遍历事务数据集来计算候选k-项集的支持度计数时，对于每一条事务，统计每一个数据项在候选项集中出现的次数，并将那些出现次数小于k次的数据项删除。如果删除之后，整条事务的长度小于(k+1)，则将这条事务从事务数据集中删除。</p>
+<p><div align="center"><br><img src="/img/关联规则挖掘基础篇/dhp_example.png" width="600"><br></div><br>　　DHP技术在计算候选1-项集的支持度计数的同时，对每一条事务所包含的2-项集进行枚举，根据Hash函数将其映射到对应的bucket。每一个bucket记录了其所包含的项集的数量。在生成候选2-项集时，通过查询对应的bucket来过滤不满足最小支持度阈值的候选2-项集。例如，通过Hash函数计算频繁1-项集{A}和{B}自连接生成的候选2-项集{A，B}对应的Bucket，可以发现其不满足最小支持度阈值，因此，无需计算该候选2-项集的支持度计数。<br>　　对于频繁(k+1)-项集而言，其必然包含(k+1)个频繁k-项集，同时，每一个数据项必然出现了k次。如频繁3-项集{B，C，D}包含3个频繁2-项集{B，C}，{B，D}，{C，D}，其中，{B}，{C}，{D}各分别出现2次。根据这一规律，DHP技术对事务数据集进行裁剪。具体地，在遍历事务数据集来计算候选k-项集的支持度计数时，对于每一条事务，统计每一个数据项在候选项集中出现的次数，并将那些出现次数小于k次的数据项删除。如果删除之后，整条事务的长度小于(k+1)，则将这条事务从事务数据集中删除。</p>
 <h3 id="Apriori算法并行化"><a href="#Apriori算法并行化" class="headerlink" title="Apriori算法并行化"></a>Apriori算法并行化</h3><p>　　Apriori算法并行化的基本思想是将生成候选项集的过程和计算候选项集计数的过程交给各个工作节点独立执行。本文简单介绍一下如何采用Spark技术来实现Apriori算法。<br>　　事务数据集由RDD来表示，计算频繁1-项集的过程如下图所示。</p>
-<p><div align="center"><br><img src="/img/关联规则挖掘基础篇/yafim_1.png" width="300"><br></div><br>　　在接下来的每一轮迭代过程中，各个分区生成的候选项集将被collect到driver端，并建立Hash Tree，并通过broadcast的方式将Hash Tree发送到各个worker。每一个executor根据Hash Tree计算分区内候选项集的支持度计数。在具体实现生成候选项集时，共有两种实现方式，其一是调用Spark自带的join方法，其二是采用MapReduce中map side join的方式实现，即将候选项集broadcast到各个worker，每一个executor将当前分区内的候选项集与broadcast变量中的候选项集进行自连接。实验结果表明第二种实现方式更加稳定和高效。</p>
+<p><div align="center"><br><img src="/img/关联规则挖掘基础篇/yafim_1.png" width="300"><br></div><br>　　在接下来的每一轮迭代过程中，各个分区生成的候选项集将被collect到driver端，建立Hash Tree，并通过broadcast的方式将Hash Tree发送到各个worker。每一个executor根据Hash Tree计算分区内候选项集的支持度计数。在具体实现生成候选项集时，共有两种实现方式，其一是调用Spark自带的join方法，其二是采用类似MapReduce中map side join的方式实现，即将候选项集broadcast到各个worker，每一个executor将当前分区内的频繁k-项集与broadcast变量中的频繁k-项集进行自连接，生成候选(k+1)-项集。实验结果表明第二种实现方式更加稳定和高效。</p>
 <p><div align="center"><br><img src="/img/关联规则挖掘基础篇/yafim.png" width="300"><br></div></p>
 <h3 id="FP-Growth算法分析"><a href="#FP-Growth算法分析" class="headerlink" title="FP-Growth算法分析"></a>FP-Growth算法分析</h3><h4 id="基本思想-1"><a href="#基本思想-1" class="headerlink" title="基本思想"></a>基本思想</h4><p>　　FP-Growth算法采用分而治之的思想，递归地将事务数据集划分为多个更小的条件事务数据集来挖掘频繁项集。同时，采用FP-Tree来表示事务数据集，FP-Tree是一种前缀树的变形，具有较高的压缩性能。FP-Growth算法在执行过程中只需要两次遍历事务数据集，并且不产生候选项集，从而在性能上比Apriori算法快了一个数量级。</p>
 <h4 id="算法过程-1"><a href="#算法过程-1" class="headerlink" title="算法过程"></a>算法过程</h4><p>　　给定如下图所示的事务数据集。首先，FP-Growth算法扫描一次事务数据集，计算各个数据项的支持度计数，从而得到频繁1-项集。然后，再一次扫描事务数据集，根据频繁1-项集对每一条事务进行过滤，删除其中不满足最小支持度阈值的1-项集，并按照支持度计数递减排序。</p>
